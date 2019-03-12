@@ -1,10 +1,13 @@
 from xml.dom import minidom
 
-class MyStruct():
-    def __init__(self, term, df):
-        self.term = term
-        self.docList = []
-        self.df = df
+class TermDict():
+  def __init__(self, term, docList, df):
+    self.term = term
+    self.docList = docList
+    self.df = df
+    
+  def __str__(self):
+    return "Term: " + self.term + ", Documents: " + self.docList + ", df: " + self.df
 
 # parse an xml file by name
 mydoc = minidom.parse('doc.xml')
@@ -23,14 +26,14 @@ for doc in docs:
 
 terms = list(set(terms))
 terms.sort()
-termsDict = {}
-
+termsDict = []
 
 for term in terms:
-  docList = []
+  docList = {}
   for key in dictionary:
-    if term in dictionary.get(key):
-      docList.append(key)
-  termsDict[term] = docList
-
-print(termsDict)
+    docArr = dictionary.get(key).split()
+    counter = docArr.count(term)
+    if (counter > 0):
+      docList[key] = counter
+  termDict = TermDict(term, docList, len(docList))
+  termsDict.append(termDict)
